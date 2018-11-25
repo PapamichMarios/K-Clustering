@@ -292,5 +292,47 @@ vector<vector<double>> k_meanspp(vector<vector<double>> data, int data_size, int
 	return centroids;
 }
 /*===================================== ASSIGNMENT FUNCTIONS */
+vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids, int data_size)
+{
+	vector<int> cluster_assigned(data_size);
+	double min_distance = INT_MAX;
+	int cluster;
+	double temp_distance;
+	
+	/*== calculate the distance of all the points with the centroids
+		 assign them to the closest centroid
+	  == */
+	for(unsigned int i=0; i<data.size(); i++)
+	{
+		for(unsigned int j=0; j<centroids.size(); j++)
+		{
+			temp_distance = euclideanDistance2(data[i], centroids[j]);
+
+			if(temp_distance < min_distance)
+			{
+				min_distance = temp_distance;
+				cluster = j;
+			}
+		}
+
+		/*== assign point to cluster*/
+		cluster_assigned[i] = cluster;
+
+		/*== reset min_distance*/
+		min_distance = INT_MAX;
+	}
+
+	return cluster_assigned;
+}
+
+void lsh()
+{
+	
+}
+
+void hypercube()
+{
+	
+}
 
 /*===================================== UPDATE FUNCTIONS */

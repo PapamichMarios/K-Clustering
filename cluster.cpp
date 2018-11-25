@@ -9,7 +9,7 @@
 #include "utilities.h"
 
 #define NECESSARY_ARGUMENTS   9
-#define INITIALIZATION_POINTS 5
+#define INITIALIZATION_POINTS 20
 
 using namespace std;
 
@@ -46,6 +46,9 @@ int main(int argc, char ** argv)
 		
 	/*== k-means++ initialisation*/
 	centroids = k_meanspp(data, data_size, clusters, INITIALIZATION_POINTS); 
+
+	/*== loyd's assignment*/
+	vector<int> labels = loyds(data, centroids, data_size);
 
 	exit(EXIT_SUCCESS);
 }

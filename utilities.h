@@ -16,6 +16,9 @@ std::vector<std::vector<double>> randomSelection(std::vector<std::vector<double>
 std::vector<std::vector<double>> k_meanspp(std::vector<std::vector<double>> data, int data_size, int clusters, int k);
 
 /*===================================== ASSIGNMENT FUNCTIONS */
+std::vector<int> loyds(std::vector<std::vector<double>> data, std::vector<std::vector<double>> centroids, int data_size);
+void lsh();
+void hypercube();
 
 /*===================================== UPDATE FUNCTIONS */
 #endif
