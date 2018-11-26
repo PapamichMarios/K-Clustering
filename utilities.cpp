@@ -5,8 +5,11 @@
 #include <vector>
 #include <climits>
 #include <random>
+#include <cmath>
 
 #include "utilities.h"
+
+#define MAX_TIMES_RADIUS 10
 
 using namespace std;
 
@@ -74,6 +77,85 @@ void getConfigurationParameters(char** argv, int &clusters, int &L, int &h, shor
     LStream >> line >> L;
 }
 
+HashTable<vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type)
+{
+	HashTable<vector<double>> ** hash_tableptr;
+
+	/*== open input.dat*/
+	ifstream infile;
+
+	infile.open(argv[inputFileIndex]);
+	if(!infile.is_open())
+	{
+		cout << "Could not open input data file" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	/*== find table size*/
+	int tableSize = help_functions::calculate_tableSize(infile, type, k);
+
+	/*== find dimensions*/
+	int dimensions = help_functions::calculate_dimensions(infile);
+
+	/*== create the table*/
+	if(type == "cosine")
+	{
+		hash_tableptr = new HashTable<vector<double>>*[L];
+
+		for(int i=0; i<L; i++)
+			hash_tableptr[i] = new HashTable_COS<vector<double>>(tableSize, k, dimensions);
+	}
+	else if(type == "euclidean")
+	{
+		hash_tableptr = new HashTable<vector<double>>*[L];
+
+		for(int i=0; i<L; i++)
+			hash_tableptr[i] = new HashTable_EUC<vector <double>>(tableSize, k, dimensions);
+	}
+
+	infile.close();
+
+	return hash_tableptr;
+}
+
+void fillHashTable(HashTable<vector<double>> ** hash_tableptr, char ** argv, int inputFileIndex, int L)
+{
+	ifstream infile;
+
+	infile.open(argv[inputFileIndex]);
+	if(!infile.is_open())
+	{
+		cout << "Could not open input data file" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	string line;
+	string identifier, coord;
+	vector<double> point;
+
+	while(getline(infile, line))
+	{
+		istringstream iss(line);
+		getline(iss, identifier, ',');
+		while(getline(iss, coord, ','))
+		{
+			try{
+				point.push_back(stod(coord));
+			} catch(const exception& e){
+				std::cerr << e.what();
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		for(int i=0; i<L; i++)
+			hash_tableptr[i]->put(point, identifier);
+
+		point.clear();
+	}
+
+	infile.close();
+}
+
 int getInputLines(char ** argv, short int inputFileIndex)
 {
 	ifstream infile;
@@ -121,7 +203,6 @@ vector<vector<double>> getInputData(char ** argv, short int inputFileIndex)
 			} catch(const exception& e){
 				std::cerr << e.what();
 				exit(EXIT_FAILURE);
-				continue;
 			}
 		}
 
@@ -137,7 +218,7 @@ double euclideanDistance2(vector<double> x, vector<double> y)
 {
 	double distance=0;
 
-	for(unsigned int i=0; i<x.size(); i++)
+	for(unsigned int i=1; i<x.size(); i++)
 		distance += (x[i]-y[i])*(x[i]-y[i]);
 
 	return distance;
@@ -325,9 +406,117 @@ vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids,
 	return cluster_assigned;
 }
 
-void lsh()
+vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double>> data, vector<vector<double>> centroids, int data_size, int L)
 {
+	/*== set unassigned points to -1*/
+	vector<int> labels(data_size);
+	for(int i=0; i<data_size; i++)
+		labels[i] = -1;
+
+	vector<vector<int>> hash_centroids_index(centroids.size());
 	
+	/*== assign centroids to another vector because they already contain the id*/
+	vector<vector<double>> temp_centroids(centroids.size());
+	for(unsigned int ii=0; ii<centroids.size(); ii++)
+	{
+		for(unsigned int jj=1; jj<centroids[ii].size(); jj++)
+		{
+			temp_centroids.at(ii).push_back(centroids.at(ii).at(jj));
+		}
+	}
+
+	/*== find where centroids hash*/
+	for(int i=0; i<L; i++)
+	{
+		for(unsigned int j=0; j<centroids.size(); j++)
+		{
+			hash_centroids_index.at(i).push_back( hash_tableptr[i]->hash(temp_centroids[j]) );
+		}
+	}
+
+	/*== calculate radius*/
+	double min_distance = INT_MAX;
+	for(unsigned int j=0; j<centroids.size(); j++)
+	{
+		for(unsigned int z=j+1; z<centroids.size(); z++)
+		{
+			double temp_distance = euclideanDistance2(centroids[j], centroids[z]);
+			temp_distance = sqrt(temp_distance);
+
+			if(temp_distance < min_distance)
+				min_distance = temp_distance;
+		}
+	}
+
+	double radius = min_distance/2;
+
+	for(int i=0; i<MAX_TIMES_RADIUS; i++)
+	{
+		for(int ii=0; ii<L; ii++)
+		{
+			/*== get points that their distance is lesser than the radius*/
+			for(unsigned int j=0; j<centroids.size(); j++)
+			{
+				vector<int> conflicts;
+
+				/*== find if two centroids hash to the same bucket*/
+				for(unsigned int z=j+1; z<centroids.size(); z++)
+				{
+					if(hash_centroids_index.at(ii).at(j) == hash_centroids_index.at(ii).at(z))
+					{
+						conflicts.push_back(z);
+					}
+				}
+
+				/*== find neighbours through Range Search*/
+				if(conflicts.size()==0)
+				{
+					hash_tableptr[ii]->RS(temp_centroids[j], 1, radius, labels, j);	
+				}
+				else
+				{
+					conflicts.push_back(j);
+
+					hash_tableptr[ii]->RS_conflict(temp_centroids, 1, radius, labels, conflicts);
+				}
+			}
+		}
+
+		/*== double the radius*/
+		radius *= 2;
+	}
+
+	/*== assign the rest of the unassigned points to a cluster through loyds*/
+	for(int i=0; i<data_size; i++)
+	{
+		/*== if the point has not been assigned, assign it with loyds*/
+		if(labels[i] == -1)
+		{
+			double distance;
+			double min_distance = INT_MAX;
+			int cluster;
+
+			for(unsigned int j=0; j<temp_centroids.size(); j++)
+			{
+				distance = euclideanDistance2(data[i], centroids[j]);
+
+				if(distance < min_distance)
+				{
+					min_distance = distance;
+					cluster = j;
+				}
+			}
+
+			/*== update labels*/
+			labels[i] = cluster;
+		}
+	}
+
+	/*== reset assigned points*/
+	for(int i=0; i<L; i++)
+		hash_tableptr[i]->reset_assigned();
+
+	return labels;
 }
 
 void hypercube()

@@ -7,6 +7,7 @@
 #include <ctime>
 
 #include "utilities.h"
+#include "hash_table.h"
 
 #define NECESSARY_ARGUMENTS   9
 #define INITIALIZATION_POINTS 20
@@ -50,5 +51,14 @@ int main(int argc, char ** argv)
 	/*== loyd's assignment*/
 	vector<int> labels = loyds(data, centroids, data_size);
 
+	/*== create lsh table*/
+	HashTable<std::vector<double>>** hash_tableptr = createHashTable(argv, inputFileIndex, L, h, metric);
+
+	/*== fill hash_table*/
+	fillHashTable(hash_tableptr, argv, inputFileIndex, L);
+
+	/*== start lsh process*/
+	lsh(hash_tableptr, data, centroids, data_size, L);
+	
 	exit(EXIT_SUCCESS);
 }
