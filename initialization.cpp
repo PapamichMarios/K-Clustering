@@ -41,6 +41,7 @@ vector<vector<double>> k_meanspp(vector<vector<double>> data, int data_size, int
 	{
 		index = rand() % data_size;
 		points[i] = data[index];
+
 		points_available[i] = 1;
 	}
 	

@@ -19,10 +19,11 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
-	string metric;
 	short int inputFileIndex;
 	short int configFileIndex;
 	short int outputFileIndex;
+
+	string metric;
 	
 	int clusters;
 	int L = 5;
@@ -65,7 +66,7 @@ int main(int argc, char ** argv)
 	fillHashTable(hash_tableptr, argv, inputFileIndex, L);
 
 	/*== start lsh assignment by range search process*/
-	lsh(hash_tableptr, data, centroids, data_size, L);
+	labels = lsh(hash_tableptr, data, centroids, data_size, L);
 
 	/*== create hypercube*/
 	HyperCube<std::vector<double>> * hyper_cubeptr = createHyperCube(argv, inputFileIndex, k, metric);
@@ -74,7 +75,13 @@ int main(int argc, char ** argv)
 	fillHyperCube(hyper_cubeptr, argv, inputFileIndex);
 
 	/*== start hyper assignment by range search process*/
-	hypercube(hyper_cubeptr, data, centroids, probes, M, data_size);
+	labels = hypercube(hyper_cubeptr, data, centroids, probes, M, data_size);
+
+	/*== k-means update*/
+	centroids = k_means(data, labels, centroids); 
+	
+	/*== PAM update*/
+	centroids = PAM_a_la_loyds(data, labels, centroids);
 	
 	exit(EXIT_SUCCESS);
 }
