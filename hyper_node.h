@@ -8,9 +8,10 @@ class HyperNode
 		K point;
 		std::string id;
 		HyperNode* next;
+		int assigned;
 
 	public:
-		HyperNode(const K &point, const std::string id) : point(point), id(id), next(NULL) { }
+		HyperNode(const K &point, const std::string id) : point(point), id(id), next(NULL), assigned(0) { }
 
 		~HyperNode()
 		{
@@ -20,6 +21,16 @@ class HyperNode
 		K getKey()
 		{
 			return this->point;
+		}
+
+		int getAssigned()
+		{
+			return this->assigned;
+		}
+
+		void setAssigned(int x)
+		{
+			this->assigned = x;
 		}
 
 		std::string getId()

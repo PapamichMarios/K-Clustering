@@ -1,5 +1,5 @@
 CPP      = g++
-OBJ      = cluster.o utilities.o hyperplane.o fi.o g.o
+OBJ      = cluster.o initialization.o assignment.o update.o utilities.o hyperplane.o fi.o g.o
 BIN      = cluster
 CFLAGS   = -Wall -g -std=c++11
 
@@ -8,6 +8,15 @@ $(BIN): $(OBJ)
 
 cluster.o: cluster.cpp
 	$(CPP) -c cluster.cpp $(CFLAGS)
+
+initialization.o: initialization.cpp
+	$(CPP) -c initialization.cpp $(CFLAGS)
+
+assignment.o: assignment.cpp
+	$(CPP) -c assignment.cpp $(CFLAGS)
+
+update.o: update.cpp
+	$(CPP) -c update.cpp $(CFLAGS)
 
 utilities.o: utilities.cpp
 	$(CPP) -c utilities.cpp $(CFLAGS)

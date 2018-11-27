@@ -50,12 +50,33 @@ class HyperCube
 			delete[] table;
 		}	
 
+		virtual int hash(const K &key) =0;
 		virtual void put(const K &point, std::string identifier) =0;
 
 		virtual void ANN(const K &query, std::ofstream& outputfile, int probes, int M, double &distance_ANN, double &time_ANN, std::string &identifier_ANN) =0;
 		virtual void NN(const K &query, std::ofstream& outputfile, double &distance_NN,double &time_NN) =0;
-		virtual void RS (const K &query,std::ofstream& outputfile, int c, double R, int probes, int M) =0;
+		virtual void RS (const K &query, int c, double R, int probes, int M, std::vector<int> labels, int cluster) =0;
+		virtual void RS_conflict(const std::vector<K> &queries, int c, double R, int probes, int M, std::vector<int> labels, std::vector<int> clusters)=0;
+
 		virtual long long int memory_used(int dim)=0;
+
+		void reset_assigned()
+		{
+			HyperNode<K> * temp;
+
+			for(int i=0; i<this->tableSize; i++)
+			{
+				temp = this->table[i];
+				while(temp != NULL)
+				{
+					/*== reset assigned flag*/
+					temp->setAssigned(0);
+
+					/*== iterate to the next hash node*/
+					temp = temp->getNext();
+				}
+			}
+		}
 };
 
 template <typename K>
@@ -74,6 +95,11 @@ class HyperCube_EUC : public HyperCube<K>
 		{
 			delete this->cube_function;
 			this->cube_function = NULL;	
+		}
+
+		int hash(const K &key)
+		{
+			return cube_function->cubeValue(key);
 		}
 
 		void put(const K &key, std::string identifier)
@@ -212,12 +238,9 @@ class HyperCube_EUC : public HyperCube<K>
 			time_ANN = double(end_time - begin_time) / CLOCKS_PER_SEC;
 		}
 
-		void RS(const K &query, std::ofstream& outputfile, int c, double R, int probes, int M)
+		void RS (const K &query, int c, double R, int probes, int M, std::vector<int> labels, int cluster) 
 		{
-			std::vector<double> distance_list;
 			std::vector<int> hamming_neighbours;
-			std::vector<std::string> identifier_list;
-			double distance=0;
 			int probes_visited=0, M_visited=0;
 
 			int hash_val		= cube_function->cubeValue(query);
@@ -235,12 +258,19 @@ class HyperCube_EUC : public HyperCube<K>
 				/*== iterate through the bucket*/
 				while( temp != NULL )
 				{
-					distance = help_functions::euclidean_distance(query, temp->getKey());
+					/*== check if point is already assigned*/
+					if(temp->getAssigned() == 1)
+					{
+						temp = temp->getNext();
+						continue;
+					}
+
+					double distance = help_functions::euclidean_distance(query, temp->getKey());
 		
 					if(distance<c*R)
 					{
-						distance_list.push_back(distance);
-						identifier_list.push_back(temp->getId());
+						labels[stoi(temp->getId())-1] = cluster;
+						temp->setAssigned(1);
 					}	
 
 					/*== iterate to the next node*/
@@ -267,11 +297,80 @@ class HyperCube_EUC : public HyperCube<K>
 					probes_visited++;
 				}
 			}
+		}
 
-			/*== print neighbours*/
-			for(unsigned int i=0; i<distance_list.size(); i++)
-				//outputfile << identifier_list[i] << " " << distance_list[i] << std::endl;
-				outputfile << identifier_list[i] << std::endl;
+		void RS_conflict(const std::vector<K> &queries, int c, double R, int probes, int M, std::vector<int> labels, std::vector<int> clusters)
+		{
+			std::vector<int> hamming_neighbours;
+			int probes_visited=0, M_visited=0;
+
+			int hash_val		= cube_function->cubeValue(queries[0]);
+			HyperNode<K> * temp = this->table[hash_val];
+
+
+			/*== find the hamming distance for the hash_val*/
+			for(int i=0; i<this->tableSize; i++)
+				hamming_neighbours.push_back(help_functions::hamming_distance(hash_val, i));
+			hamming_neighbours[hash_val] = INT_MAX;
+
+			/*== search untill condition of hypercube*/
+			while( probes_visited < probes && M_visited < M )
+			{
+				/*== iterate through the bucket*/
+				while( temp != NULL )
+				{
+					/*== check if point is already assigned*/
+					if(temp->getAssigned() == 1)
+					{
+						temp = temp->getNext();
+						continue;
+					}
+
+					/*== for each point calculate its distance with all the centroids that hash in the same bucket*/
+					double min_distance = INT_MAX;
+					int cluster;
+					for(unsigned int i=0; i<clusters.size(); i++)
+					{
+						double distance = help_functions::euclidean_distance(queries[i], temp->getKey());
+
+						if(distance<min_distance)
+						{
+							min_distance = distance;
+							cluster = clusters[i];
+						}
+					}		
+
+					/*== accept points under the range barrier*/
+					if(min_distance<c*R)
+					{
+						labels[stoi(temp->getId())-1] = cluster;
+						temp->setAssigned(1);
+					}	
+
+					/*== iterate to the next node*/
+					temp = temp->getNext();	
+					M_visited++;
+				}
+
+				if( M_visited < M && probes_visited < probes )
+				{
+					/*== continue to next probe*/
+					auto min = std::min_element(hamming_neighbours.begin(), hamming_neighbours.end());
+					if(*min == INT_MAX)
+					{
+						std::cout << "Max probes searched" << std::endl;
+						break;
+					}
+
+					int index = std::distance(hamming_neighbours.begin(), min);		
+
+					/*== set pointer to closer probe*/
+					temp = this->table[index];
+					hamming_neighbours[index] = INT_MAX;
+
+					probes_visited++;
+				}
+			}
 		}
 
 		long long int memory_used(int dim)
@@ -312,6 +411,11 @@ class HyperCube_COS : public HyperCube<K>
 			this->cube_function = NULL;
 		}
 		
+		int hash(const K &key)
+		{
+			return cube_function->hashValue(key);
+		}
+
 		void put(const K &key, std::string identifier)
 		{
         	int hash_val = cube_function->hashValue(key);
@@ -447,12 +551,9 @@ class HyperCube_COS : public HyperCube<K>
 			time_NN = double(end_time - begin_time) / CLOCKS_PER_SEC;
 		}
 
-		void RS (const K &query,std::ofstream& outputfile, int c, double R, int probes, int M)
+		void RS (const K &query, int c, double R, int probes, int M, std::vector<int> labels, int cluster)
 		{
-			std::vector<double> distance_list;
 			std::vector<int> hamming_neighbours;
-			std::vector<std::string> identifier_list;
-			double distance=0;
 			int probes_visited=0, M_visited=0;
 
 			int hash_val		= cube_function->hashValue(query);
@@ -470,12 +571,19 @@ class HyperCube_COS : public HyperCube<K>
 				/*== iterate through the bucket*/
 				while( temp != NULL )
 				{
-					distance = help_functions::cosine_distance(query, temp->getKey());
+					/*== check if point is already assigned*/
+					if(temp->getAssigned() == 1)
+					{
+						temp = temp->getNext();
+						continue;
+					}
+
+					double distance = help_functions::cosine_distance(query, temp->getKey());
 		
 					if(distance<c*R)
 					{
-						distance_list.push_back(distance);
-						identifier_list.push_back(temp->getId());
+						labels[stoi(temp->getId())-1] = cluster;
+						temp->setAssigned(1);
 					}	
 
 					/*== iterate to the next node*/
@@ -503,10 +611,80 @@ class HyperCube_COS : public HyperCube<K>
 				}
 			}
 
-			/*== print neighbours*/
-			for(unsigned int i=0; i<distance_list.size(); i++)
-				//outputfile << identifier_list[i] << " " << distance_list[i] << std::endl;
-				outputfile << identifier_list[i] << std::endl;
+		}
+
+		void RS_conflict(const std::vector<K> &queries, int c, double R, int probes, int M, std::vector<int> labels, std::vector<int> clusters)
+		{
+			std::vector<int> hamming_neighbours;
+			int probes_visited=0, M_visited=0;
+
+			int hash_val		= cube_function->hashValue(queries[0]);
+			HyperNode<K> * temp = this->table[hash_val];
+
+
+			/*== find the hamming distance for the hash_val*/
+			for(int i=0; i<this->tableSize; i++)
+				hamming_neighbours.push_back(help_functions::hamming_distance(hash_val, i));
+			hamming_neighbours[hash_val] = INT_MAX;
+
+			/*== search untill condition of hypercube*/
+			while( probes_visited < probes && M_visited < M )
+			{
+				/*== iterate through the bucket*/
+				while( temp != NULL )
+				{
+					/*== check if point is already assigned*/
+					if(temp->getAssigned() == 1)
+					{
+						temp = temp->getNext();
+						continue;
+					}
+
+					/*== for each point calculate its distance with all the centroids that hash in the same bucket*/
+					double min_distance = INT_MAX;
+					int cluster;
+					for(unsigned int i=0; i<clusters.size(); i++)
+					{
+						double distance = help_functions::cosine_distance(queries[i], temp->getKey());
+
+						if(distance<min_distance)
+						{
+							min_distance = distance;
+							cluster = clusters[i];
+						}
+					}		
+
+					/*== accept points under the range barrier*/
+					if(min_distance<c*R)
+					{
+						labels[stoi(temp->getId())-1] = cluster;
+						temp->setAssigned(1);
+					}	
+
+					/*== iterate to the next node*/
+					temp = temp->getNext();	
+					M_visited++;
+				}
+
+				if( M_visited < M && probes_visited < probes )
+				{
+					/*== continue to next probe*/
+					auto min = std::min_element(hamming_neighbours.begin(), hamming_neighbours.end());
+					if(*min == INT_MAX)
+					{
+						std::cout << "Max probes searched" << std::endl;
+						break;
+					}
+
+					int index = std::distance(hamming_neighbours.begin(), min);		
+
+					/*== set pointer to closer probe*/
+					temp = this->table[index];
+					hamming_neighbours[index] = INT_MAX;
+
+					probes_visited++;
+				}
+			}
 		}
 
 		long long int memory_used(int dim)

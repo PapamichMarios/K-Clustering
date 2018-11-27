@@ -7,6 +7,9 @@
 #include <ctime>
 
 #include "utilities.h"
+#include "initialization.h"
+#include "assignment.h"
+#include "update.h"
 #include "hash_table.h"
 
 #define NECESSARY_ARGUMENTS   9
@@ -25,6 +28,10 @@ int main(int argc, char ** argv)
 	int L = 5;
 	int h = 4;
 
+	int k = 3;
+	int M = 10;
+	int probes = 2;
+
 	srand(time(NULL));
 
 	/*== check number of args given*/
@@ -37,7 +44,7 @@ int main(int argc, char ** argv)
 	int data_size = getInputLines(argv, inputFileIndex);
 
 	/*== get config elements*/
-	getConfigurationParameters(argv, clusters, L, h, configFileIndex);
+	getConfigurationParameters(argv, clusters, L, h , k, M, probes, configFileIndex);
 
 	/*== get input data*/
 	vector<vector<double>> data = getInputData(argv, inputFileIndex);
@@ -57,8 +64,17 @@ int main(int argc, char ** argv)
 	/*== fill hash_table*/
 	fillHashTable(hash_tableptr, argv, inputFileIndex, L);
 
-	/*== start lsh process*/
+	/*== start lsh assignment by range search process*/
 	lsh(hash_tableptr, data, centroids, data_size, L);
+
+	/*== create hypercube*/
+	HyperCube<std::vector<double>> * hyper_cubeptr = createHyperCube(argv, inputFileIndex, k, metric);
+
+	/*== fill hypercube*/
+	fillHyperCube(hyper_cubeptr, argv, inputFileIndex);
+
+	/*== start hyper assignment by range search process*/
+	hypercube(hyper_cubeptr, data, centroids, probes, M, data_size);
 	
 	exit(EXIT_SUCCESS);
 }
