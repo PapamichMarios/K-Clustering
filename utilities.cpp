@@ -47,7 +47,7 @@ void getInlineArguments(int argc, char** argv, std::string &metric, short int &i
     }
 }
 
-void getConfigurationParameters(char** argv, int &clusters, int &L, int &h, int &k, int &M, int &probes, short int configFileIndex)
+void getConfigurationParameters(char** argv, int &clusters, int &initializationpp_points, int &L, int &h, int &k, int &M, int &probes, short int configFileIndex)
 {
 	ifstream configfile;
 	string line;
@@ -63,7 +63,12 @@ void getConfigurationParameters(char** argv, int &clusters, int &L, int &h, int 
 	getline(configfile, line);
     istringstream clusterStream(line);
     clusterStream >> line >> clusters;
-	
+
+	/*== initialization++ points*/	
+	getline(configfile, line);
+    istringstream initpppointsStream(line);
+    initpppointsStream >> line >> initializationpp_points;
+
 	/*== hash functions h*/
 	getline(configfile, line);
     std::istringstream hStream(line);
@@ -298,6 +303,149 @@ vector<vector<double>> getInputData(char ** argv, short int inputFileIndex)
 	infile.close();
 
 	return input;
+}
+
+int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz)
+{
+	if( z == zz -1 )
+	{
+		z=0;
+		if( j == jj -1)
+		{
+			j=0;
+			if(i == ii -1)
+				return 1;
+			else
+				i++;
+		}
+		else
+			j++;
+	}
+	else
+		z++;
+
+	return 0;
+}
+
+void resetOutput(char **argv, short int outputFileIndex)
+{
+	
+	/*== open outputfile for writing*/
+	ofstream outfile;
+
+	outfile.open(argv[outputFileIndex], ofstream::out | ofstream::trunc);
+	if(!outfile.is_open())
+	{
+		cout << "Could not open output file" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	outfile.close();
+}
+
+void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vector<vector<double>> centroids, vector<long double> silhouette_array, int i, int j, int z, string metric)
+{
+	vector<int> cluster_size(centroids.size());
+
+	/*== count the final clusters size*/
+	for(unsigned int i_=0; i_<labels.size(); i_++)
+		cluster_size[labels[i_]]++;
+
+	/*== open outputfile for writing*/
+	ofstream outfile;
+
+	outfile.open(argv[outputFileIndex], ofstream::app);
+	if(!outfile.is_open())
+	{
+		cout << "Could not open output file" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	outfile <<  "Algorithm: ";
+	switch(i)
+	{
+		case 0: 
+			cout << "RandomSelection";
+			outfile << "RandomSelection" ;
+			break;
+
+		case 1:
+			cout << "K-means++";
+			outfile << "K-means++";
+			break;
+	}
+
+	cout << " x ";
+	outfile << " x ";
+	switch(j)
+	{
+		case 0:
+			cout << "Loyds";
+			outfile << "Loyds";
+			break;
+
+		case 1:
+			cout << "LSH";
+			outfile << "LSH";
+			break;
+
+		case 2:
+			cout << "Hypercube";
+			outfile << "Hypercube";
+			break;
+	}
+
+	cout << " x ";
+	outfile << " x ";
+	switch(z)
+	{
+		case 0:
+			cout << "K-means";
+			outfile << "K-means";
+			break;
+
+		case 1:
+			cout << "PAM(loyds)";
+			outfile << "PAM(loyds)" ;
+			break;
+	}
+
+	cout << endl;
+	outfile << endl << "Metric: " << metric << endl;
+
+	for(unsigned int i_=0; i_<centroids.size(); i_++)
+	{	
+		outfile << "CLUSTER-" << i_+1 << " {size: " << cluster_size[i_] << ", centroid: ";
+
+		/*== k-means centroid*/
+		if(centroids[i_][0] == -1)
+		{
+			outfile << "[";
+			for(unsigned int j_=1; j_<centroids[i_].size()-1; j_++)
+				outfile << centroids[i_][j_] << ", " ;
+
+			outfile << centroids[i_][centroids[i_].size()-1];
+			outfile << "]";
+		}
+		else
+		{
+			outfile << centroids[i_][0];
+		}
+
+		outfile << "}" << endl;
+	}
+
+	outfile << "Silhouette: [" ;
+	long double stotal=0;
+	for(unsigned int i_=0; i_<silhouette_array.size(); i_++)
+	{
+		outfile << silhouette_array[i_] << ", ";
+		stotal += silhouette_array[i_];
+	}
+
+	outfile << stotal/silhouette_array.size() << "]" << endl;
+
+	outfile.close();
 }
 
 double euclideanDistance2(vector<double> x, vector<double> y)

@@ -9,7 +9,7 @@
 #include "hyperplane.h"
 #include "help_functions.h"
 
-#define W 2 
+#define W 1 
 
 using namespace std;
 using namespace help_functions;

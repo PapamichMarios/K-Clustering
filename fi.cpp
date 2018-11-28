@@ -42,7 +42,7 @@ fi::fi(int k, int dim)
 	/*== constructing the rs*/
 	std::random_device rd;
 	std::default_random_engine generator(rd());
-	std::uniform_int_distribution<int> distribution(-25,25);
+	std::uniform_int_distribution<int> distribution(-50,50);
 	
 	this->r_array = new int[k];
 	for(i=0; i<k; i++)
@@ -93,7 +93,7 @@ int fi::hashValue(vector<double> p, int table_size)
 	{
 		cout << "Overflow detected(fi), repicking ris and recomputing fi" << endl;
 
-		int d = 100;
+		int d = 50;
 		while(hash_val > INT_MAX || hash_val < INT_MIN)
 		{
 			std::random_device rd;

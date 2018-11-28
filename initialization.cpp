@@ -64,8 +64,8 @@ vector<vector<double>> k_meanspp(vector<vector<double>> data, int data_size, int
 
 	for(int i=1; i<clusters; i++)
 	{
-		p_array.resize(k-i+1);
-		p_array_index.resize(k-i+1);
+		vector<double> p_array(k-i+1);
+		vector<int> p_array_index(k-i+1);
 
 		/*== make P array*/
 		p_array[0] = 0;
@@ -135,8 +135,6 @@ vector<vector<double>> k_meanspp(vector<vector<double>> data, int data_size, int
 		points_available[centroid_index] = 0;
 
 		/*== reset vars to find next centroid*/
-		p_array.clear();
-		p_array_index.clear();
 		p_array_counter=1;
 		sum = 0.0;
 		max_distance = INT_MIN;

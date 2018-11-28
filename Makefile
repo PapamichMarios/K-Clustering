@@ -1,7 +1,7 @@
 CPP      = g++
 OBJ      = cluster.o initialization.o assignment.o update.o utilities.o hyperplane.o fi.o g.o
 BIN      = cluster
-CFLAGS   = -Wall -g -std=c++11
+CFLAGS   = -g -std=c++11 -O2
 
 $(BIN): $(OBJ)
 	$(CPP) -o $(BIN) $(OBJ) $(CFLAGS)

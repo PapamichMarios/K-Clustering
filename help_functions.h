@@ -161,7 +161,7 @@ namespace help_functions
 				++lines_counter;
 
 			
-			table_size = lines_counter/32;
+			table_size = lines_counter/16;
 
 			infile.clear();
 			infile.seekg(0, std::ios::beg);
