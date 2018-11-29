@@ -459,47 +459,45 @@ void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vec
 	{
 		case 0: 
 			cout << "RandomSelection";
-			outfile << "RandomSelection" ;
+			outfile << "I1" ;
 			break;
 
 		case 1:
 			cout << "K-means++";
-			outfile << "K-means++";
+			outfile << "I2";
 			break;
 	}
 
-	cout << " x ";
-	outfile << " x ";
+	cout << "x";
 	switch(j)
 	{
 		case 0:
 			cout << "Loyds";
-			outfile << "Loyds";
+			outfile << "A1";
 			break;
 
 		case 1:
 			cout << "LSH";
-			outfile << "LSH";
+			outfile << "A2";
 			break;
 
 		case 2:
 			cout << "Hypercube";
-			outfile << "Hypercube";
+			outfile << "A3";
 			break;
 	}
 
 	cout << " x ";
-	outfile << " x ";
 	switch(z)
 	{
 		case 0:
 			cout << "K-means";
-			outfile << "K-means";
+			outfile << "U1";
 			break;
 
 		case 1:
 			cout << "PAM(loyds)";
-			outfile << "PAM(loyds)" ;
+			outfile << "U2" ;
 			break;
 	}
 
