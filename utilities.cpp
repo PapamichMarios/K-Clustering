@@ -97,6 +97,18 @@ void getConfigurationParameters(char** argv, int &clusters, int &initializationp
 	configfile.close();
 }
 
+Metric<double>* getMetric(std::string type)
+{
+	Metric<double> * metric_ptr;
+
+	if(type == "cosine")
+		metric_ptr = new Metric_COS<double>();
+	else if(type == "euclidean")
+		metric_ptr = new Metric_EUC<double>();
+
+	return metric_ptr;
+}
+
 HashTable<vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type)
 {
 	HashTable<vector<double>> ** hash_tableptr;

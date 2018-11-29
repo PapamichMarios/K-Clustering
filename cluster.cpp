@@ -12,6 +12,7 @@
 #include "assignment.h"
 #include "update.h"
 #include "hash_table.h"
+#include "metric.h"
 
 #define NECESSARY_ARGUMENTS   		9
 
@@ -30,6 +31,7 @@ int main(int argc, char ** argv)
 	short int outputFileIndex;
 
 	string metric;
+	Metric<double>* metric_ptr;
 	
 	int clusters;
 	int initializationpp_points;
@@ -56,6 +58,9 @@ int main(int argc, char ** argv)
 
 	/*== get input data*/
 	vector<vector<double>> data = getInputData(argv, inputFileIndex);
+
+	/*== create metric object*/
+	metric_ptr = getMetric(metric);
 
 	/*============== CLUSTERING PROCESS */
 	vector<vector<double>> centroids;
@@ -90,7 +95,7 @@ int main(int argc, char ** argv)
 
 			case 1:
 				/*== k-means++ initialisation*/
-				centroids = k_meanspp(data, data_size, clusters, initializationpp_points); 
+				centroids = k_meanspp(data, data_size, clusters, initializationpp_points, metric_ptr); 
 				break;
 		}
 			
@@ -108,17 +113,17 @@ int main(int argc, char ** argv)
 			{
 				case 0:
 					/*== loyd's assignment*/
-					labels = loyds(data, centroids, data_size);
+					labels = loyds(data, centroids, data_size, metric_ptr);
 					break;
 
 				case 1:
 					/*== start lsh assignment by range search process*/
-					labels = lsh(hash_tableptr, data, centroids, data_size, L);
+					labels = lsh(hash_tableptr, data, centroids, data_size, L, metric_ptr);
 					break;
 
 				case 2:
 					/*== start hyper assignment by range search process*/
-					labels = hypercube(hyper_cubeptr, data, centroids, probes, M, data_size);
+					labels = hypercube(hyper_cubeptr, data, centroids, probes, M, data_size, metric_ptr);
 					break;
 			}
 
@@ -127,12 +132,12 @@ int main(int argc, char ** argv)
 			{
 				case 0:
 					/*== k-means update*/
-					centroids = k_means(data, labels, centroids, objective_function); 
+					centroids = k_means(data, labels, centroids, objective_function, metric_ptr); 
 					break;
 
 				case 1:
 					/*== PAM update*/
-					centroids = PAM_a_la_loyds(data, labels, centroids, objective_function);
+					centroids = PAM_a_la_loyds(data, labels, centroids, objective_function, metric_ptr);
 					break;
 			}
 
@@ -141,7 +146,7 @@ int main(int argc, char ** argv)
 		} while( abs(objective_function - last_objective_function) > (double)5/100 && loops < MAX_PROCESS_LOOPS);
 
 		/*== calculate silhouette*/
-		silhouette_array = Silhouette(data, centroids, labels);
+		silhouette_array = Silhouette(data, centroids, labels, metric_ptr);
 
 		/*== print results*/
 		printOutput(argv, outputFileIndex, labels, centroids, silhouette_array, i, j, z, metric);	

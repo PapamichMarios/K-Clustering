@@ -5,6 +5,7 @@
 
 #include "hash_table.h"
 #include "hyper_cube.h"
+#include "metric.h"
 
 void rerunCheck(int argc, int args);
 
@@ -12,6 +13,7 @@ void getInlineArguments(int argc, char** argv, std::string &metric, short int &i
 void getConfigurationParameters(char** argv, int &clusters, int &initializationpp_points, int &L, int &h, int &k, int &M, int &probes, short int configFileIndex);
 int  getInputLines(char** argv, short int inputFileIndex);
 std::vector<std::vector<double>> getInputData(char** argv, short int inputFileIndex);
+Metric<double>* getMetric(std::string type);
 void printOutput(char **argv, short int outputFileIndex, std::vector<int> labels, std::vector<std::vector<double>> centroids, std::vector<long double> silhouette_array, int i, int j, int z, std::string metric);
 void resetOutput(char **argv, short int outputFileIndex);
 

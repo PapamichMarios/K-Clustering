@@ -15,7 +15,7 @@
 using namespace std;
 
 
-vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids, int data_size)
+vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids, int data_size, Metric<double>* metric_ptr)
 {
 	vector<int> cluster_assigned(data_size);
 	double min_distance = INT_MAX;
@@ -29,7 +29,7 @@ vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids,
 	{
 		for(unsigned int j=0; j<centroids.size(); j++)
 		{
-			temp_distance = euclideanDistance2(data[i], centroids[j]);
+			temp_distance = metric_ptr->distance2(data[i], centroids[j]);
 
 			if(temp_distance < min_distance)
 			{
@@ -48,7 +48,7 @@ vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids,
 	return cluster_assigned;
 }
 
-vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double>> data, vector<vector<double>> centroids, int data_size, int L)
+vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double>> data, vector<vector<double>> centroids, int data_size, int L, Metric<double>* metric_ptr)
 {
 	/*== set unassigned points to -1*/
 	vector<int> labels(data_size);
@@ -82,7 +82,7 @@ vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double
 	{
 		for(unsigned int z=j+1; z<centroids.size(); z++)
 		{
-			double temp_distance = euclideanDistance2(centroids[j], centroids[z]);
+			double temp_distance = metric_ptr->distance2(centroids[j], centroids[z]);
 			temp_distance = sqrt(temp_distance);
 
 			if(temp_distance < min_distance)
@@ -140,7 +140,7 @@ vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double
 
 			for(unsigned int j=0; j<temp_centroids.size(); j++)
 			{
-				distance = euclideanDistance2(data[i], centroids[j]);
+				distance = metric_ptr->distance2(data[i], centroids[j]);
 
 				if(distance < min_distance)
 				{
@@ -161,7 +161,7 @@ vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double
 	return labels;
 }
 
-vector<int> hypercube(HyperCube<vector<double>> * hyper_cubeptr, vector<vector<double>> data, vector<vector<double>> centroids, int probes, int M, int data_size)
+vector<int> hypercube(HyperCube<vector<double>> * hyper_cubeptr, vector<vector<double>> data, vector<vector<double>> centroids, int probes, int M, int data_size, Metric<double>* metric_ptr)
 {
 	/*== set unassigned points to -1*/
 	vector<int> labels(data_size);

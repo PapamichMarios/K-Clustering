@@ -7,7 +7,7 @@
 
 using namespace std;
 
-vector<vector<double>> k_means(vector<vector<double>> data, vector<int> labels, vector<vector<double>> centroids, long double &objective_function)
+vector<vector<double>> k_means(vector<vector<double>> data, vector<int> labels, vector<vector<double>> centroids, long double &objective_function, Metric<double>* metric_ptr)
 {
 	vector<vector<double>> new_centroids(centroids.size(), vector<double>(centroids[0].size()));
 	vector<int> cluster_size(centroids.size());
@@ -31,12 +31,12 @@ vector<vector<double>> k_means(vector<vector<double>> data, vector<int> labels, 
 	objective_function = 0;
 
 	for(unsigned int i=0; i<labels.size(); i++)
-		objective_function += euclideanDistance2(data[i], new_centroids[labels[i]]);
+		objective_function += metric_ptr->distance2(data[i], new_centroids[labels[i]]);
 
 	return new_centroids;
 }
 
-vector<vector<double>> PAM_a_la_loyds(vector<vector<double>> data, vector<int> labels, vector<vector<double>> centroids, long double &objective_function)
+vector<vector<double>> PAM_a_la_loyds(vector<vector<double>> data, vector<int> labels, vector<vector<double>> centroids, long double &objective_function, Metric<double>* metric_ptr)
 {
 	vector<vector<double>> medoids(centroids.size(), vector<double>(centroids[0].size()));
 	vector<double> min_distances(centroids.size(), INT_MAX);
@@ -53,7 +53,7 @@ vector<vector<double>> PAM_a_la_loyds(vector<vector<double>> data, vector<int> l
 			if(i == j || labels[i] != labels[j])
 				continue;
 
-			distance += euclideanDistance2(data[i], data[j]);
+			distance += metric_ptr->distance2(data[i], data[j]);
 		}
 
 		if(distance < min_distances[labels[i]])
@@ -76,7 +76,7 @@ vector<vector<double>> PAM_a_la_loyds(vector<vector<double>> data, vector<int> l
 	return medoids;
 }
 
-vector<long double> Silhouette(vector<vector<double>> data, vector<vector<double>> centroids, vector<int> labels)
+vector<long double> Silhouette(vector<vector<double>> data, vector<vector<double>> centroids, vector<int> labels, Metric<double>* metric_ptr)
 {
 	vector<long double> silhouette_array(labels.size());
 	vector<int> cluster_counter(centroids.size());
@@ -96,7 +96,7 @@ vector<long double> Silhouette(vector<vector<double>> data, vector<vector<double
 			if( j == labels[i] )
 				continue;
 
-			distance = euclideanDistance2(data[i], centroids[j]);
+			distance = metric_ptr->distance2(data[i], centroids[j]);
 
 			if(distance < min_distance)
 			{
@@ -112,7 +112,7 @@ vector<long double> Silhouette(vector<vector<double>> data, vector<vector<double
 			if( j == i || labels[i] != labels[j] )
 				continue;
 
-			average_distance1 += euclideanDistance2(data[i], data[j])/cluster_counter[labels[i]];
+			average_distance1 += metric_ptr->distance2(data[i], data[j])/cluster_counter[labels[i]];
 		}
 
 		/*== find average of the closest cluster*/
@@ -122,7 +122,7 @@ vector<long double> Silhouette(vector<vector<double>> data, vector<vector<double
 			if( labels[j] != cluster )
 				continue;
 
-			average_distance2 += euclideanDistance2(data[i], data[j])/cluster_counter[cluster];
+			average_distance2 += metric_ptr->distance2(data[i], data[j])/cluster_counter[cluster];
 		}
 
 		silhouette_array[i] = (average_distance2 - average_distance1)/fmax(average_distance2, average_distance1);
