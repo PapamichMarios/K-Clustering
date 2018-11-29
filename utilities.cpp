@@ -8,6 +8,11 @@
 #include <cmath>
 
 #include "utilities.h"
+#include "initialization.h"
+#include "assignment.h"
+#include "update.h"
+
+#define MAX_PROCESS_LOOPS 25
 
 using namespace std;
 
@@ -120,6 +125,69 @@ Metric<double>* getMetric(std::string type)
 		metric_ptr = new Metric_EUC<double>();
 
 	return metric_ptr;
+}
+
+void clustering(vector<vector<double>> data, int data_size, int clusters, int initializationpp_points, Metric<double>*  metric_ptr, int L, int M, int probes, HashTable<vector<double>>** hash_tableptr, HyperCube<vector<double>>* hyper_cubeptr, int i, int j, int z, vector<vector<double>> &centroids, vector<int> &labels)
+{
+	/*============== INITIALIZATION */
+	switch(i)
+	{
+		case 0: 
+			/*== simple random selection of k points*/
+			centroids = randomSelection(data, data_size, clusters);
+			break;
+
+		case 1:
+			/*== k-means++ initialisation*/
+			centroids = k_meanspp(data, data_size, clusters, initializationpp_points, metric_ptr); 
+			break;
+	}
+		
+
+	long double objective_function=0;
+	long double last_objective_function =0;
+	int loops=0;
+	do
+	{
+		last_objective_function = objective_function;
+
+		/*============== ASSIGNMENT */
+		switch(j)
+		{
+			case 0:
+				/*== loyd's assignment*/
+				labels = loyds(data, centroids, data_size, metric_ptr);
+				break;
+
+			case 1:
+				/*== start lsh assignment by range search process*/
+				labels = lsh(hash_tableptr, data, centroids, data_size, L, metric_ptr);
+				break;
+
+			case 2:
+				/*== start hyper assignment by range search process*/
+				labels = hypercube(hyper_cubeptr, data, centroids, probes, M, data_size, metric_ptr);
+				break;
+		}
+
+		/*============== UPDATE */
+		switch(z)
+		{
+			case 0:
+				/*== k-means update*/
+				centroids = k_means(data, labels, centroids, objective_function, metric_ptr); 
+				break;
+
+			case 1:
+				/*== PAM update*/
+				centroids = PAM_a_la_loyds(data, labels, centroids, objective_function, metric_ptr);
+				break;
+		}
+
+		cout << objective_function - last_objective_function << endl;
+		loops++;
+	} while( abs(objective_function - last_objective_function) > (double)5/100 && loops < MAX_PROCESS_LOOPS);
+
 }
 
 HashTable<vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type)

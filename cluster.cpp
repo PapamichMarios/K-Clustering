@@ -8,15 +8,10 @@
 #include <cmath>
 
 #include "utilities.h"
-#include "initialization.h"
-#include "assignment.h"
 #include "update.h"
-#include "hash_table.h"
 #include "metric.h"
 
 #define NECESSARY_ARGUMENTS   		10
-
-#define MAX_PROCESS_LOOPS 			25
 
 #define INITIALIZATION_FUNCTIONS 	2
 #define ASSIGNMENT_FUNCTIONS 		3
@@ -63,11 +58,6 @@ int main(int argc, char ** argv)
 	/*== create metric object*/
 	metric_ptr = getMetric(metric);
 
-	/*============== CLUSTERING PROCESS */
-	vector<vector<double>> centroids;
-	vector<long double> silhouette_array;
-	vector<int> labels;
-
 	/*== create & fill lsh table*/
 	HashTable<std::vector<double>>** hash_tableptr = createHashTable(argv, inputFileIndex, L, h, metric);
 	fillHashTable(hash_tableptr, argv, inputFileIndex, L);
@@ -84,69 +74,17 @@ int main(int argc, char ** argv)
 	int z=0;
 	int termination=0;
 
+	/*== choose different combination of functions for each loop*/
 	while(termination != 1)
 	{
+		vector<vector<double>> centroids;
+		vector<int> labels;
+		vector<long double> silhouette_array;
+
 		clock_t begin_time = clock();
 		
-		/*============== INITIALIZATION */
-		switch(i)
-		{
-			case 0: 
-				/*== simple random selection of k points*/
-				centroids = randomSelection(data, data_size, clusters);
-				break;
-
-			case 1:
-				/*== k-means++ initialisation*/
-				centroids = k_meanspp(data, data_size, clusters, initializationpp_points, metric_ptr); 
-				break;
-		}
-			
-
-		long double objective_function=0;
-		long double last_objective_function =0;
-		int loops=0;
-		do
-		{
-			//difference = abs(objective_function - last_objective_function);
-			last_objective_function = objective_function;
-
-			/*============== ASSIGNMENT */
-			switch(j)
-			{
-				case 0:
-					/*== loyd's assignment*/
-					labels = loyds(data, centroids, data_size, metric_ptr);
-					break;
-
-				case 1:
-					/*== start lsh assignment by range search process*/
-					labels = lsh(hash_tableptr, data, centroids, data_size, L, metric_ptr);
-					break;
-
-				case 2:
-					/*== start hyper assignment by range search process*/
-					labels = hypercube(hyper_cubeptr, data, centroids, probes, M, data_size, metric_ptr);
-					break;
-			}
-
-			/*============== UPDATE */
-			switch(z)
-			{
-				case 0:
-					/*== k-means update*/
-					centroids = k_means(data, labels, centroids, objective_function, metric_ptr); 
-					break;
-
-				case 1:
-					/*== PAM update*/
-					centroids = PAM_a_la_loyds(data, labels, centroids, objective_function, metric_ptr);
-					break;
-			}
-
-			cout << objective_function - last_objective_function << endl;
-			loops++;
-		} while( abs(objective_function - last_objective_function) > (double)5/100 && loops < MAX_PROCESS_LOOPS);
+		/*== clustering*/
+		clustering(data, data_size, clusters, initializationpp_points, metric_ptr, L, M, probes, hash_tableptr, hyper_cubeptr, i, j, z, centroids, labels);
 
 		double time_lasted = double(clock() - begin_time)/CLOCKS_PER_SEC;
 
