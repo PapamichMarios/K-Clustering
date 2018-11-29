@@ -13,18 +13,28 @@ using namespace std;
 
 void rerunCheck(int argc, int args)
 {
-	if( argc != args )
+	if( argc > args )
 	{
 		cout << "Rerun: ./cluster -i <input_file> -o <output_file> -c <configuration_file> -d <metric>" << endl;
 		exit(EXIT_FAILURE);
 	}
 }
 
-void getInlineArguments(int argc, char** argv, std::string &metric, short int &inputFileIndex, short int &configFileIndex, short int &outputFileIndex)
+void getInlineArguments(int argc, char** argv, std::string &metric, short int &inputFileIndex, short int &configFileIndex, short int &outputFileIndex, int &completeFlag)
 {
 	int opt;
 
-    while ((opt = getopt(argc, argv, "c:i:d:o:")) != -1)
+	/*== struct for getopt long options*/
+	static struct option long_options[] = 
+	{
+		{"c"	 	, required_argument, NULL, 'c'},
+		{"i"	 	, required_argument, NULL, 'i'},
+		{"d"	 	, required_argument, NULL, 'd'},
+		{"o"	 	, required_argument, NULL, 'o'},
+		{"complete" , no_argument, NULL, 'p'}
+	};
+
+	while ((opt = getopt_long_only(argc, argv, "", long_options, NULL)) != -1)
     {
         switch (opt)
         {
@@ -40,6 +50,9 @@ void getInlineArguments(int argc, char** argv, std::string &metric, short int &i
             case 'o':
                 outputFileIndex = optind-1;
                 break;
+			case 'p':
+				completeFlag = 1;
+				break;
             case '?':
                 cout << "Invalid argument" << endl;
                 exit(EXIT_FAILURE);
@@ -355,7 +368,7 @@ void resetOutput(char **argv, short int outputFileIndex)
 	outfile.close();
 }
 
-void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vector<vector<double>> centroids, vector<long double> silhouette_array, int i, int j, int z, string metric)
+void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vector<vector<double>> centroids, vector<long double> silhouette_array, int i, int j, int z, string metric, double time_lasted, int completeFlag, vector<vector<double>> data)
 {
 	vector<int> cluster_size(centroids.size());
 
@@ -447,6 +460,8 @@ void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vec
 		outfile << "}" << endl;
 	}
 
+	outfile << "clustering_time: " << time_lasted << " seconds" << endl;
+
 	outfile << "Silhouette: [" ;
 	long double stotal=0;
 	for(unsigned int i_=0; i_<silhouette_array.size(); i_++)
@@ -457,17 +472,26 @@ void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vec
 
 	outfile << stotal/silhouette_array.size() << "]" << endl;
 
+	/*== if complete inline arg was given*/
+	if(completeFlag)
+	{
+		for(unsigned int i_=0; i_<centroids.size(); i_++)
+		{
+			outfile << "CLUSTER-" << i_+1 << " {";
+
+			for(unsigned int j_=0; j_<labels.size()-1; j_++)
+			{
+				if(labels[j_] == i_)
+					outfile << data[j_][0] << ", ";
+
+			}
+
+			outfile << "}" << endl;
+		}
+	}
+	
+	outfile << endl;
 	outfile.close();
-}
-
-double euclideanDistance2(vector<double> x, vector<double> y)
-{
-	double distance=0;
-
-	for(unsigned int i=1; i<x.size(); i++)
-		distance += (x[i]-y[i])*(x[i]-y[i]);
-
-	return distance;
 }
 
 int binarySearch(vector<double> arr, int a, int z, double x)

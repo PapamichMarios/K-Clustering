@@ -14,7 +14,7 @@
 #include "hash_table.h"
 #include "metric.h"
 
-#define NECESSARY_ARGUMENTS   		9
+#define NECESSARY_ARGUMENTS   		10
 
 #define MAX_PROCESS_LOOPS 			25
 
@@ -29,6 +29,7 @@ int main(int argc, char ** argv)
 	short int inputFileIndex;
 	short int configFileIndex;
 	short int outputFileIndex;
+	int completeFlag=0;
 
 	string metric;
 	Metric<double>* metric_ptr;
@@ -48,7 +49,7 @@ int main(int argc, char ** argv)
 	rerunCheck(argc, NECESSARY_ARGUMENTS);
 
 	/*== get all inline arguments through getopt()*/
-	getInlineArguments(argc, argv, metric, inputFileIndex, configFileIndex, outputFileIndex);
+	getInlineArguments(argc, argv, metric, inputFileIndex, configFileIndex, outputFileIndex, completeFlag);
 
 	/*== get data size*/
 	int data_size = getInputLines(argv, inputFileIndex);
@@ -85,6 +86,8 @@ int main(int argc, char ** argv)
 
 	while(termination != 1)
 	{
+		clock_t begin_time = clock();
+		
 		/*============== INITIALIZATION */
 		switch(i)
 		{
@@ -145,11 +148,13 @@ int main(int argc, char ** argv)
 			loops++;
 		} while( abs(objective_function - last_objective_function) > (double)5/100 && loops < MAX_PROCESS_LOOPS);
 
+		double time_lasted = double(clock() - begin_time)/CLOCKS_PER_SEC;
+
 		/*== calculate silhouette*/
 		silhouette_array = Silhouette(data, centroids, labels, metric_ptr);
 
 		/*== print results*/
-		printOutput(argv, outputFileIndex, labels, centroids, silhouette_array, i, j, z, metric);	
+		printOutput(argv, outputFileIndex, labels, centroids, silhouette_array, i, j, z, metric, time_lasted, completeFlag, data);	
 
 		/*== change combination*/
 		termination = changeClusteringCombination(i, j, z, INITIALIZATION_FUNCTIONS, ASSIGNMENT_FUNCTIONS, UPDATE_FUNCTIONS);

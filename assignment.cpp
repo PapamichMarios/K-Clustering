@@ -190,7 +190,7 @@ vector<int> hypercube(HyperCube<vector<double>> * hyper_cubeptr, vector<vector<d
 	{
 		for(unsigned int z=j+1; z<centroids.size(); z++)
 		{
-			double temp_distance = euclideanDistance2(centroids[j], centroids[z]);
+			double temp_distance = metric_ptr->distance2(centroids[j], centroids[z]);
 			temp_distance = sqrt(temp_distance);
 
 			if(temp_distance < min_distance)
@@ -245,7 +245,7 @@ vector<int> hypercube(HyperCube<vector<double>> * hyper_cubeptr, vector<vector<d
 
 			for(unsigned int j=0; j<temp_centroids.size(); j++)
 			{
-				distance = euclideanDistance2(data[i], centroids[j]);
+				distance = metric_ptr->distance2(data[i], centroids[j]);
 
 				if(distance < min_distance)
 				{

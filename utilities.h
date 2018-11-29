@@ -9,12 +9,12 @@
 
 void rerunCheck(int argc, int args);
 
-void getInlineArguments(int argc, char** argv, std::string &metric, short int &inputFileIndex, short int &configFileIndex, short int &outputFileIndex);
+void getInlineArguments(int argc, char** argv, std::string &metric, short int &inputFileIndex, short int &configFileIndex, short int &outputFileIndex, int &completeFlag);
 void getConfigurationParameters(char** argv, int &clusters, int &initializationpp_points, int &L, int &h, int &k, int &M, int &probes, short int configFileIndex);
 int  getInputLines(char** argv, short int inputFileIndex);
 std::vector<std::vector<double>> getInputData(char** argv, short int inputFileIndex);
 Metric<double>* getMetric(std::string type);
-void printOutput(char **argv, short int outputFileIndex, std::vector<int> labels, std::vector<std::vector<double>> centroids, std::vector<long double> silhouette_array, int i, int j, int z, std::string metric);
+void printOutput(char **argv, short int outputFileIndex, std::vector<int> labels, std::vector<std::vector<double>> centroids, std::vector<long double> silhouette_array, int i, int j, int z, std::string metric, double time_lasted, int completeFlag, std::vector<std::vector<double>> data);
 void resetOutput(char **argv, short int outputFileIndex);
 
 HashTable<std::vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type);
@@ -25,7 +25,6 @@ void fillHyperCube(HyperCube<std::vector<double>> * hyper_cubeptr, char ** argv,
 
 int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz);
 
-double euclideanDistance2(std::vector<double> x, std::vector<double> y);
 int binarySearch(std::vector<double> arr, int a, int z, double x);
 
 #endif
