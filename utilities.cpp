@@ -12,7 +12,7 @@
 #include "assignment.h"
 #include "update.h"
 
-#define MAX_PROCESS_LOOPS 25
+#define MAX_PROCESS_LOOPS 20
 
 using namespace std;
 

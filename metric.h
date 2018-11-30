@@ -22,7 +22,7 @@ class Metric_EUC : public Metric<K>
 			for(unsigned int i=1; i<x.size(); i++)
 				distance += (x[i]-y[i])*(x[i]-y[i]);
 
-			return distance;
+			return sqrt(distance);
 		}
 };
 

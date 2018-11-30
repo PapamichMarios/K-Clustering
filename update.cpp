@@ -45,7 +45,7 @@ vector<vector<double>> PAM_a_la_loyds(vector<vector<double>> data, vector<int> l
 	/*== calculate the medoid for each cluster*/
 	for(unsigned int i=0; i<labels.size(); i++)
 	{
-		double distance;
+		double distance=0;
 
 		for(unsigned int j=0; j<labels.size(); j++)
 		{
@@ -112,7 +112,7 @@ vector<long double> Silhouette(vector<vector<double>> data, vector<vector<double
 			if( j == i || labels[i] != labels[j] )
 				continue;
 
-			average_distance1 += metric_ptr->distance2(data[i], data[j])/cluster_counter[labels[i]];
+			average_distance1 += metric_ptr->distance2(data[i], data[j])/(cluster_counter[labels[i]]-1);
 		}
 
 		/*== find average of the closest cluster*/

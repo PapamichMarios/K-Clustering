@@ -83,7 +83,6 @@ vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double
 		for(unsigned int z=j+1; z<centroids.size(); z++)
 		{
 			double temp_distance = metric_ptr->distance2(centroids[j], centroids[z]);
-			temp_distance = sqrt(temp_distance);
 
 			if(temp_distance < min_distance)
 				min_distance = temp_distance;
@@ -191,7 +190,6 @@ vector<int> hypercube(HyperCube<vector<double>> * hyper_cubeptr, vector<vector<d
 		for(unsigned int z=j+1; z<centroids.size(); z++)
 		{
 			double temp_distance = metric_ptr->distance2(centroids[j], centroids[z]);
-			temp_distance = sqrt(temp_distance);
 
 			if(temp_distance < min_distance)
 				min_distance = temp_distance;
