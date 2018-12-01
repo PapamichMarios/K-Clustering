@@ -1,0 +1,330 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/assignment.cpp
+getopt.h
+-
+iostream
+-
+sstream
+-
+fstream
+-
+vector
+-
+climits
+-
+random
+-
+cmath
+-
+utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+assignment.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/assignment.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/assignment.h
+vector
+-
+hash_table.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_table.h
+hyper_cube.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_cube.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/fi.cpp
+iostream
+-
+vector
+-
+random
+-
+algorithm
+-
+climits
+-
+string
+-
+cmath
+-
+fi.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/fi.h
+hyperplane.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/fi.h
+hyperplane.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/g.cpp
+vector
+-
+iostream
+-
+g.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/g.h
+hyperplane.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/g.h
+hyperplane.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_node.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_table.h
+string
+-
+algorithm
+-
+fstream
+-
+climits
+-
+ctime
+-
+map
+-
+vector
+-
+hash_node.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_node.h
+help_functions.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/help_functions.h
+fi.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/fi.h
+g.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/g.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/help_functions.h
+cstdlib
+-
+sstream
+-
+fstream
+-
+cstdio
+-
+iostream
+-
+cmath
+-
+random
+-
+unistd.h
+-
+fstream
+-
+vector
+-
+algorithm
+-
+cstring
+-
+map
+-
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_cube.h
+string
+-
+algorithm
+-
+fstream
+-
+climits
+-
+ctime
+-
+help_functions.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/help_functions.h
+hyper_node.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_node.h
+fi.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/fi.h
+g.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/g.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_node.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.cpp
+cstdio
+-
+cstdlib
+-
+string
+-
+iostream
+-
+random
+-
+cmath
+-
+climits
+-
+hyperplane.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.h
+help_functions.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/help_functions.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.h
+string
+-
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/initialization.cpp
+getopt.h
+-
+iostream
+-
+sstream
+-
+fstream
+-
+vector
+-
+climits
+-
+random
+-
+cmath
+-
+utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+initialization.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/initialization.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/initialization.h
+vector
+-
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/metric.h
+vector
+-
+cmath
+-
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/tests/HashTable_test.cpp
+gtest/gtest.h
+-
+vector
+-
+../utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/tests/binarySearch_test.cpp
+vector
+-
+gtest/gtest.h
+-
+../hash_table.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_table.h
+../hash_node.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_node.h
+../hyper_cube.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_cube.h
+../hyper_node.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_node.h
+../fi.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/fi.cpp
+../g.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/g.cpp
+../assignment.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/assignment.cpp
+../initialization.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/initialization.cpp
+../update.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/update.cpp
+../help_functions.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/help_functions.h
+../hyperplane.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyperplane.cpp
+../metric.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/metric.h
+../utilities.cpp
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.cpp
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/tests/clustering_test.cpp
+gtest/gtest.h
+-
+../utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+../initialization.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/initialization.h
+../assignment.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/assignment.h
+../update.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/update.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/tests/distance_test.cpp
+gtest/gtest.h
+-
+vector
+-
+../metric.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/metric.h
+../utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/tests/main_TESTS.cpp
+gtest/gtest.h
+-
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/update.cpp
+vector
+-
+iostream
+-
+climits
+-
+utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+update.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/update.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/update.h
+vector
+-
+hash_table.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_table.h
+hyper_cube.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_cube.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.cpp
+getopt.h
+-
+iostream
+-
+sstream
+-
+fstream
+-
+vector
+-
+climits
+-
+random
+-
+cmath
+-
+utilities.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+initialization.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/initialization.h
+assignment.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/assignment.h
+update.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/update.h
+
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/utilities.h
+vector
+-
+hash_table.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hash_table.h
+hyper_cube.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/hyper_cube.h
+metric.h
+/home/marios/Desktop/ProjectEmiris/Ergasia 2/Project-Erg2/metric.h
+
