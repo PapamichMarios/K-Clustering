@@ -10,7 +10,7 @@
 #include "utilities.h"
 #include "assignment.h"
 
-#define MAX_TIMES_RADIUS 10
+#define MAX_TIMES_RADIUS 5
 
 using namespace std;
 
@@ -18,15 +18,15 @@ using namespace std;
 vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids, int data_size, Metric<double>* metric_ptr)
 {
 	vector<int> cluster_assigned(data_size);
-	double min_distance = INT_MAX;
-	int cluster;
-	double temp_distance;
 	
 	/*== calculate the distance of all the points with the centroids
 		 assign them to the closest centroid
 	  == */
 	for(unsigned int i=0; i<data.size(); i++)
 	{
+		double min_distance = INT_MAX;
+		int cluster;
+		double temp_distance;
 		for(unsigned int j=0; j<centroids.size(); j++)
 		{
 			temp_distance = metric_ptr->distance2(data[i], centroids[j]);
@@ -40,9 +40,6 @@ vector<int> loyds(vector<vector<double>> data, vector<vector<double>> centroids,
 
 		/*== assign point to cluster*/
 		cluster_assigned[i] = cluster;
-
-		/*== reset min_distance*/
-		min_distance = INT_MAX;
 	}
 
 	return cluster_assigned;
@@ -55,7 +52,7 @@ vector<int> lsh(HashTable<vector<double>> ** hash_tableptr, vector<vector<double
 	for(int i=0; i<data_size; i++)
 		labels[i] = -1;
 
-	vector<vector<int>> hash_centroids_index(centroids.size());
+	vector<vector<int>> hash_centroids_index(L);
 	
 	/*== assign centroids to another vector because they already contain the id*/
 	vector<vector<double>> temp_centroids(centroids.size());

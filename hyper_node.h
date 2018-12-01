@@ -13,11 +13,6 @@ class HyperNode
 	public:
 		HyperNode(const K &point, const std::string id) : point(point), id(id), next(NULL), assigned(0) { }
 
-		~HyperNode()
-		{
-			
-		}
-		
 		K getKey()
 		{
 			return this->point;

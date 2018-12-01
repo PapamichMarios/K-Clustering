@@ -16,11 +16,29 @@ vector<vector<double>> randomSelection(vector<vector<double>> data, int data_siz
 {
 	vector<vector<double>> centroids(clusters);
 	int index;
-
+	int centroids_assigned=0;
 	for(int i=0; i<clusters; i++)
 	{
+		int flag=0;
+
 		index = rand() % data_size;
+		for(int j=0; j<centroids_assigned; j++)
+		{
+			if(centroids[j][0]-1 == index)
+			{
+				flag=1;
+				break;
+			}
+		}
+
+		if(flag)
+		{
+			i-=1;
+			continue;
+		}
+
 		centroids[i] = data[index];
+		centroids_assigned++;
 	}
 
 	return centroids;
@@ -82,6 +100,8 @@ vector<vector<double>> k_meanspp(vector<vector<double>> data, int data_size, int
 				for(int ii=0; ii<centroids_assigned; ii++)
 				{
 					temp_distance = metric_ptr->distance2(points[j], centroids[ii]);
+					temp_distance *= temp_distance;
+
 					if(temp_distance < min_distance)
 						min_distance = temp_distance;
 				}
@@ -108,6 +128,8 @@ vector<vector<double>> k_meanspp(vector<vector<double>> data, int data_size, int
 				for(int ii=0; ii<centroids_assigned; ii++)
 				{
 					temp_distance = metric_ptr->distance2(points[j], centroids[ii]);
+					temp_distance *= temp_distance;
+
 					if(temp_distance < min_distance)
 						min_distance = temp_distance;
 				}

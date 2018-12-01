@@ -65,6 +65,11 @@ class HashTable
 
 		virtual long long int memory_used(int dim)=0;
 
+		int getTableSize()
+		{
+			return this->tableSize;
+		}
+
 		void reset_assigned()
 		{
 			HashNode<K> * temp;

@@ -98,5 +98,10 @@ int main(int argc, char ** argv)
 		termination = changeClusteringCombination(i, j, z, INITIALIZATION_FUNCTIONS, ASSIGNMENT_FUNCTIONS, UPDATE_FUNCTIONS);
 	}
 
+	/*== unallocate memory*/
+	unallocateHashTable(hash_tableptr, L);
+	unallocateHyperCube(hyper_cubeptr);
+	delete metric_ptr;
+
 	exit(EXIT_SUCCESS);
 }

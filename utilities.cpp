@@ -185,11 +185,13 @@ void clustering(vector<vector<double>> data, int data_size, int clusters, int in
 		}
 
 		cout << objective_function - last_objective_function << endl;
+		//cout << centroids[0][0] << endl << centroids[1][0] << endl << centroids[2][0] << endl << centroids[3][0] << endl << centroids[4][0] << endl;
 		loops++;
-	} while( abs(objective_function - last_objective_function) > (double)5/100 && loops < MAX_PROCESS_LOOPS);
+	} while( abs(objective_function - last_objective_function) > (double)1/100 && loops < MAX_PROCESS_LOOPS);
 
 }
 
+/*== Hashtable & Hypercube utilities*/
 HashTable<vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type)
 {
 	HashTable<vector<double>> ** hash_tableptr;
@@ -340,6 +342,23 @@ void fillHyperCube(HyperCube<vector<double>> * hyper_cubeptr, char ** argv, int 
 	infile.close();
 }
 
+void unallocateHashTable(HashTable<vector<double>> ** hash_tableptr, int L)
+{
+	for(int i=0; i<L; i++)
+	{
+		delete hash_tableptr[i];
+		hash_tableptr[i] = NULL;
+	}
+	delete[] hash_tableptr;
+	hash_tableptr = NULL;
+}
+
+void unallocateHyperCube(HyperCube<vector<double>> * hyper_cubeptr)
+{
+	delete hyper_cubeptr;
+	hyper_cubeptr = NULL;
+}
+
 int getInputLines(char ** argv, short int inputFileIndex)
 {
 	ifstream infile;
@@ -468,7 +487,7 @@ void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vec
 			break;
 	}
 
-	cout << "x";
+	cout << " x ";
 	switch(j)
 	{
 		case 0:
@@ -491,12 +510,12 @@ void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vec
 	switch(z)
 	{
 		case 0:
-			cout << "K-means";
+			cout << "K-means --competed";
 			outfile << "U1";
 			break;
 
 		case 1:
-			cout << "PAM(loyds)";
+			cout << "PAM(loyds) --completed";
 			outfile << "U2" ;
 			break;
 	}

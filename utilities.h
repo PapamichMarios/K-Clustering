@@ -18,15 +18,17 @@ void printOutput(char **argv, short int outputFileIndex, std::vector<int> labels
 void resetOutput(char **argv, short int outputFileIndex);
 
 void clustering(std::vector<std::vector<double>> data, int data_size, int clusters, int initializationpp_points, Metric<double>*  metric_ptr, int L, int M, int probes, HashTable<std::vector<double>>** hash_tableptr, HyperCube<std::vector<double>>* hyper_cubeptr, int i, int j, int z, std::vector<std::vector<double>> &centroids, std::vector<int> &labels);
+int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz);
 
+/*== HashTable & HyperCube utilities*/
 HashTable<std::vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type);
 HyperCube<std::vector<double>> * createHyperCube(char ** argv, int inputFileIndex, int k, std::string type);
 
 void fillHashTable(HashTable<std::vector<double>> ** hash_tableptr, char ** argv, int inputFileIndex, int L);
 void fillHyperCube(HyperCube<std::vector<double>> * hyper_cubeptr, char ** argv, int inputFileIndex);
 
-int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz);
+void unallocateHashTable(HashTable<std::vector<double>> ** hash_tableptr, int L);
+void unallocateHyperCube(HyperCube<std::vector<double>> * hyper_cubeptr);
 
 int binarySearch(std::vector<double> arr, int a, int z, double x);
-
 #endif
