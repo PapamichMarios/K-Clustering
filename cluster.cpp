@@ -75,16 +75,22 @@ int main(int argc, char ** argv)
 	int termination=0;
 
 	/*== choose different combination of functions for each loop*/
+	vector<vector<double>> init_centroids;
 	while(termination != 1)
 	{
 		vector<vector<double>> centroids;
 		vector<int> labels;
 		vector<long double> silhouette_array;
 
+		/*== initialization*/
+		if(init_centroids.size() == 0)
+			init_centroids = assignment_clustering(data, data_size, clusters, initializationpp_points, metric_ptr, i);
+
 		clock_t begin_time = clock();
 		
-		/*== clustering*/
-		clustering(data, data_size, clusters, initializationpp_points, metric_ptr, L, M, probes, hash_tableptr, hyper_cubeptr, i, j, z, centroids, labels);
+		/*== assignment && update*/
+		centroids = init_centroids;
+		clustering(data, data_size, metric_ptr, L, M, probes, hash_tableptr, hyper_cubeptr, i, j, z, centroids, labels);
 
 		double time_lasted = double(clock() - begin_time)/CLOCKS_PER_SEC;
 
@@ -95,7 +101,7 @@ int main(int argc, char ** argv)
 		printOutput(argv, outputFileIndex, labels, centroids, silhouette_array, i, j, z, metric, time_lasted, completeFlag, data);	
 
 		/*== change combination*/
-		termination = changeClusteringCombination(i, j, z, INITIALIZATION_FUNCTIONS, ASSIGNMENT_FUNCTIONS, UPDATE_FUNCTIONS);
+		termination = changeClusteringCombination(i, j, z, INITIALIZATION_FUNCTIONS, ASSIGNMENT_FUNCTIONS, UPDATE_FUNCTIONS, init_centroids);
 	}
 
 	/*== unallocate memory*/

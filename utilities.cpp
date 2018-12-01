@@ -14,7 +14,7 @@
 
 #define MAX_PROCESS_LOOPS 20
 
-#define DEBUG
+//#define DEBUG
 
 using namespace std;
 
@@ -129,23 +129,23 @@ Metric<double>* getMetric(std::string type)
 	return metric_ptr;
 }
 
-void clustering(vector<vector<double>> data, int data_size, int clusters, int initializationpp_points, Metric<double>*  metric_ptr, int L, int M, int probes, HashTable<vector<double>>** hash_tableptr, HyperCube<vector<double>>* hyper_cubeptr, int i, int j, int z, vector<vector<double>> &centroids, vector<int> &labels)
+vector<vector<double>> assignment_clustering(vector<vector<double>> data, int data_size, int clusters, int initializationpp_points, Metric<double>* metric_ptr, int i)
 {
 	/*============== INITIALIZATION */
 	switch(i)
 	{
 		case 0: 
 			/*== simple random selection of k points*/
-			centroids = randomSelection(data, data_size, clusters);
-			break;
+			return randomSelection(data, data_size, clusters);
 
 		case 1:
 			/*== k-means++ initialisation*/
-			centroids = k_meanspp(data, data_size, clusters, initializationpp_points, metric_ptr); 
-			break;
+			return k_meanspp(data, data_size, clusters, initializationpp_points, metric_ptr); 
 	}
-		
+}
 
+void clustering(vector<vector<double>> data, int data_size, Metric<double>*  metric_ptr, int L, int M, int probes, HashTable<vector<double>>** hash_tableptr, HyperCube<vector<double>>* hyper_cubeptr, int i, int j, int z, vector<vector<double>> &centroids, vector<int> &labels)
+{
 	long double objective_function=0;
 	long double last_objective_function =0;
 	int loops=0;
@@ -421,7 +421,7 @@ vector<vector<double>> getInputData(char ** argv, short int inputFileIndex)
 	return input;
 }
 
-int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz)
+int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz, vector<vector<double>> &init_centroids)
 {
 	if( z == zz -1 )
 	{
@@ -432,7 +432,10 @@ int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz)
 			if(i == ii -1)
 				return 1;
 			else
+			{
 				i++;
+				init_centroids.clear();
+			}
 		}
 		else
 			j++;
@@ -486,7 +489,7 @@ void printOutput(char **argv, short int outputFileIndex, vector<int> labels, vec
 			break;
 
 		case 1:
-			cout << "K-means++";
+			cout << "Initialization++";
 			outfile << "I2";
 			break;
 	}

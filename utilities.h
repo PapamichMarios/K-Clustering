@@ -17,8 +17,10 @@ Metric<double>* getMetric(std::string type);
 void printOutput(char **argv, short int outputFileIndex, std::vector<int> labels, std::vector<std::vector<double>> centroids, std::vector<long double> silhouette_array, int i, int j, int z, std::string metric, double time_lasted, int completeFlag, std::vector<std::vector<double>> data);
 void resetOutput(char **argv, short int outputFileIndex);
 
-void clustering(std::vector<std::vector<double>> data, int data_size, int clusters, int initializationpp_points, Metric<double>*  metric_ptr, int L, int M, int probes, HashTable<std::vector<double>>** hash_tableptr, HyperCube<std::vector<double>>* hyper_cubeptr, int i, int j, int z, std::vector<std::vector<double>> &centroids, std::vector<int> &labels);
-int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz);
+/*== clustering functions*/
+std::vector<std::vector<double>> assignment_clustering(std::vector<std::vector<double>> data, int data_size, int clusters, int initializationpp_points, Metric<double>* metric_ptr, int i);
+void clustering(std::vector<std::vector<double>> data, int data_size, Metric<double>*  metric_ptr, int L, int M, int probes, HashTable<std::vector<double>>** hash_tableptr, HyperCube<std::vector<double>>* hyper_cubeptr, int i, int j, int z, std::vector<std::vector<double>> &centroids, std::vector<int> &labels);
+int changeClusteringCombination(int &i, int &j, int &z, int ii, int jj, int zz, std::vector<std::vector<double>> &init_centroids);
 
 /*== HashTable & HyperCube utilities*/
 HashTable<std::vector<double>> ** createHashTable(char** argv, int inputFileIndex, int L, int k, std::string type);
