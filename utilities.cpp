@@ -14,6 +14,8 @@
 
 #define MAX_PROCESS_LOOPS 20
 
+#define DEBUG
+
 using namespace std;
 
 void rerunCheck(int argc, int args)
@@ -184,8 +186,10 @@ void clustering(vector<vector<double>> data, int data_size, int clusters, int in
 				break;
 		}
 
+#ifdef DEBUG
 		cout << objective_function - last_objective_function << endl;
-		//cout << centroids[0][0] << endl << centroids[1][0] << endl << centroids[2][0] << endl << centroids[3][0] << endl << centroids[4][0] << endl;
+#endif
+
 		loops++;
 	} while( abs(objective_function - last_objective_function) > (double)1/100 && loops < MAX_PROCESS_LOOPS);
 

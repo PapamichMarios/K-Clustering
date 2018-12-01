@@ -5,6 +5,8 @@
 #include "utilities.h"
 #include "update.h"
 
+//#define DEBUG
+
 using namespace std;
 
 vector<vector<double>> k_means(vector<vector<double>> data, vector<int> labels, vector<vector<double>> centroids, long double &objective_function, Metric<double>* metric_ptr)
@@ -72,9 +74,16 @@ vector<vector<double>> PAM_a_la_loyds(vector<vector<double>> data, vector<int> l
 
 	for(unsigned int i=0; i<min_distances.size(); i++)
 	{		objective_function += min_distances[i];
+
+#ifdef DEBUG
 			cout << min_distances[i] << " ";
+#endif
 	}
+
+#ifdef DEBUG
 	cout << endl;
+#endif
+
 	return medoids;
 }
 
