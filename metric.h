@@ -17,6 +17,9 @@ class Metric_EUC : public Metric<K>
 	public:
 		double distance2(std::vector<K> x, std::vector<K> y)
 		{
+			if(x.size() != y.size())
+				return -1;
+
 			double distance=0;
 
 			for(unsigned int i=1; i<x.size(); i++)
@@ -32,6 +35,9 @@ class Metric_COS : public Metric<K>
 	public:
 		double distance2(std::vector<K> x, std::vector<K> y)
 		{
+			if(x.size() != y.size())
+				return -1;
+
 			double distance = 0;
 			double dot_product = 0;
 			
