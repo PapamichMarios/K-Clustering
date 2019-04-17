@@ -1,4 +1,4 @@
-# Project-Erg2
+# Περιγραφή
 Clustering algorithms K-means &amp; K-medoids using C++.
 Υλοποίηση αλγορίθμων για τη συσταδοποίηση διανυσμάτων στο d-διάστατο χώρο R με τη χρήση αποστάσεων Euclidean και Cosine, συμπεριλαμβάνοντας 12 συνδυασμούς:
 
