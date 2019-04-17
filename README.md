@@ -1,6 +1,7 @@
 # Project-Erg2
 Clustering algorithms K-means &amp; K-medoids using C++.
-Υλοποίηση αλγορίθμων για τη συσταδοποίηση διανυσμάτων στο d-διάστατο χώρο R, χρησιμοποιώντας 12 συνδυασμούς:
+Υλοποίηση αλγορίθμων για τη συσταδοποίηση διανυσμάτων στο d-διάστατο χώρο R με τη χρήση αποστάσεων Euclidean και Cosine, συμπεριλαμβάνοντας 12 συνδυασμούς:
+
 - Initialisation
   1. Random Selection of k points
   2. K-means ++
