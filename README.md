@@ -1,5 +1,16 @@
 # Project-Erg2
-Clustering algorithms K-means &amp; K-medoids using C++
+Clustering algorithms K-means &amp; K-medoids using C++.
+Υλοποίηση αλγορίθμων για τη συσταδοποίηση διανυσμάτων στο d-διάστατο χώρο R, χρησιμοποιώντας 12 συνδυασμούς:
+- Initialisation
+  1. Random Selection of k points
+  2. K-means ++
+- Assignment
+  1. Lloyd's assignment.
+  2. Assignment by range search with LSH
+  3. Assignment by range search with Hypercube
+- Update
+  1. K-means
+  2. Partitioning Around Medoids (PAM)improved like Lloyd's
 
 # Author
 - Μάριος Παπαμιχαλόπουλος 
